@@ -346,6 +346,9 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
 
       console.log("거래 생성 요청 데이터:", escrowData);
 
+      // 로딩 모달 표시
+      showLoadingModal("거래를 생성하는 중입니다...");
+
       // API 호출
       const response = await fetch("https://www.wooajung.shop/blockchain/create_escrow", {
         method: "POST",
@@ -355,6 +358,9 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
         },
         body: JSON.stringify(escrowData),
       });
+
+      // 로딩 모달 닫기
+      closeModalAfterLoading();
 
       // 응답 텍스트 먼저 확인
       const responseText = await response.text();
@@ -399,6 +405,9 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
       // 모달 닫기
       setShowTradeModal(false);
     } catch (error) {
+      // 로딩 모달 닫기 (에러 발생 시에도 닫아야 함)
+      closeModalAfterLoading();
+
       console.error("거래 생성 중 오류 발생:", error);
       showMessage("거래 생성 실패", error.message || "거래 생성 중 오류가 발생했습니다.", "error");
     }
@@ -406,7 +415,6 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
 
   // 로딩 모달을 표시하는 함수
   const showLoadingModal = (message) => {
-    setModalTitle("신뢰점수 확인 중");
     setModalMessage(message);
     setModalType("loading");
     setShowAlertModal(true);

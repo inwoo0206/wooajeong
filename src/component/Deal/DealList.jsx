@@ -13,7 +13,7 @@ const DealList = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalMessage, setModalMessage] = useState("");
-  const [modalType, setModalType] = useState("success"); // "success" 또는 "error"
+  const [modalType, setModalType] = useState("success"); // "success", "error", "loading"
 
   // 고정된 토큰 사용
   const getAuthToken = () => {
@@ -73,7 +73,7 @@ const DealList = () => {
     }
   };
 
-  // 모달을 표시하는 함수
+  // 메시지 모달을 표시하는 함수
   const showMessageModal = (title, message, type = "success") => {
     setModalTitle(title);
     setModalMessage(message);
@@ -81,9 +81,25 @@ const DealList = () => {
     setShowModal(true);
   };
 
+  // 로딩 모달을 표시하는 함수
+  const showLoadingModal = (message) => {
+    setModalTitle("처리 중");
+    setModalMessage(message);
+    setModalType("loading");
+    setShowModal(true);
+  };
+
+  // 모달을 닫는 함수
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   // 구매 확정 및 출금하기 공통 함수
   const handleWithdraw = async (id) => {
     try {
+      // 로딩 모달 표시
+      showLoadingModal("요청을 처리하는 중입니다...");
+
       const token = getAuthToken();
       await axios.post(
         "https://www.wooajung.shop/blockchain/withdraw",
@@ -110,10 +126,16 @@ const DealList = () => {
       // 토큰 잔액 업데이트
       fetchTokenBalance();
 
+      // 로딩 모달 닫기
+      closeModal();
+
       // 성공 모달 표시
       showMessageModal("성공", "성공적으로 처리되었습니다.", "success");
     } catch (err) {
       console.error("출금 처리 오류:", err);
+
+      // 로딩 모달 닫기
+      closeModal();
 
       // 오류 응답에서 메시지 추출
       let errorMessage = "출금 처리에 실패했습니다.";
@@ -129,6 +151,9 @@ const DealList = () => {
   // 거래 취소 처리 함수
   const handleCancelTransaction = async (id) => {
     try {
+      // 로딩 모달 표시
+      showLoadingModal("거래 취소 요청을 처리하는 중입니다...");
+
       const token = getAuthToken();
       await axios.post(
         "https://www.wooajung.shop/blockchain/delete_escrow",
@@ -155,10 +180,16 @@ const DealList = () => {
       // 토큰 잔액 업데이트
       fetchTokenBalance();
 
+      // 로딩 모달 닫기
+      closeModal();
+
       // 성공 모달 표시
       showMessageModal("거래 중단 요청이 완료되었습니다.", "중단 요청 시, 상대방의 동의 또한 필요합니다.", "success");
     } catch (err) {
       console.error("거래 취소 오류:", err);
+
+      // 로딩 모달 닫기
+      closeModal();
 
       // 오류 응답에서 메시지 추출
       let errorMessage = "거래 취소에 실패했습니다.";
@@ -224,27 +255,62 @@ const DealList = () => {
         )}
       </div>
 
-      {/* 메시지 모달 (성공/에러) */}
+      {/* 메시지 모달 (성공/에러/로딩) */}
       {showModal && (
         <div className="modal-backdrop">
           <div className="modal-container">
-            <button className="modal-close-button" onClick={() => setShowModal(false)}>
-              ×
-            </button>
+            {modalType !== "loading" && (
+              <button className="modal-close-button" onClick={() => setShowModal(false)}>
+                ×
+              </button>
+            )}
             <div className="modal-content">
-              <h2 className="modal-title" style={{ color: modalType === "error" ? "#ff6b6b" : "#333" }}>
+              <h2
+                className="modal-title"
+                style={{
+                  color: modalType === "error" ? "#ff6b6b" : modalType === "loading" ? "#2196F3" : "#333",
+                }}
+              >
                 {modalTitle}
               </h2>
-              <p className="modal-message">{modalMessage}</p>
-              <button
-                className="modal-confirm-button"
-                style={{
-                  backgroundColor: modalType === "error" ? "#ff6b6b" : "#6c7aee",
-                }}
-                onClick={() => setShowModal(false)}
-              >
-                확인
-              </button>
+
+              {modalType === "loading" ? (
+                <div className="loading-content">
+                  <div className="spinner">
+                    <style>{`
+                      .spinner {
+                        margin: 24px auto;
+                        width: 70px;
+                        height: 70px;
+                        border-radius: 50%;
+                        border: 6px solid #f3f3f3;
+                        border-top: 6px solid #2196F3;
+                        animation: spin 1s linear infinite;
+                      }
+                      @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                      }
+                    `}</style>
+                  </div>
+                  <p className="modal-message" style={{ textAlign: "center" }}>
+                    {modalMessage}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <p className="modal-message">{modalMessage}</p>
+                  <button
+                    className="modal-confirm-button"
+                    style={{
+                      backgroundColor: modalType === "error" ? "#ff6b6b" : "#6c7aee",
+                    }}
+                    onClick={() => setShowModal(false)}
+                  >
+                    확인
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
