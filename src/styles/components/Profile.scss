@@ -1,0 +1,500 @@
+/* Profile.scss - 반응형 개선 */
+
+@import "../common/commons.scss";
+@import "../mixin/mixins.scss";
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  align-items: center; // 중앙 정렬을 위해 추가
+}
+
+.profile-header {
+  width: 100%;
+  max-width: 75%; // 컨테이너와 동일한 비율로 설정
+  padding: 15px;
+  background-color: #fff;
+  text-align: center;
+  font-weight: bold;
+  color: var(--gray-700, #45474c);
+  font-family: "ABeeZee", sans-serif;
+  font-size: 20px;
+  line-height: 30px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 75%; // 한 화면일 때 최대 너비 설정 (타이틀과 동일하게)
+  min-width: 320px;
+  height: auto;
+  flex: 1;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0px 3px 11px rgba(0, 0, 0, 0.06), 0px 10px 15px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: auto; // 스크롤 가능하도록 변경
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  padding: 100px; // 패딩 조정
+}
+
+.profile-form {
+  width: 100%;
+
+  .form-group {
+    margin-bottom: $spacing-lg;
+
+    label {
+      display: block;
+      margin-bottom: $spacing-xs;
+      font-weight: 500;
+      color: $text-light;
+    }
+
+    .input-with-button {
+      display: flex;
+      flex-wrap: wrap; // 작은 화면에서 줄바꿈 허용
+      width: 80%;
+
+      input {
+        flex: 1;
+        min-width: 200px; // 최소 너비 설정
+        padding: $spacing-md;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+        font-size: $font-size-md;
+        margin-bottom: 8px; // 작은 화면에서 버튼과의 간격
+
+        &:disabled {
+          background-color: $background-color;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+        }
+      }
+
+      .edit-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        padding: 0 $spacing-md;
+        margin-left: $spacing-sm;
+        background-color: $white;
+        color: $primary-color;
+        border: 1px solid $primary-color;
+        border-radius: $border-radius-sm;
+        transition: all 0.3s ease;
+        height: 40px;
+
+        &:hover {
+          background-color: $primary-color;
+          color: $white;
+        }
+      }
+    }
+
+    .usdt-container {
+      display: flex;
+      flex-wrap: wrap; // 작은 화면에서 줄바꿈 허용
+      gap: 8px;
+      width: 95%;
+
+      .usdt-input {
+        flex: 1;
+        min-width: 200px; // 최소 너비 설정
+        padding: $spacing-md;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-sm;
+        font-size: $font-size-md;
+        background-color: $background-color;
+      }
+
+      .charge-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        padding: 0 $spacing-md;
+        background-color: #5c7cfa;
+        color: $white;
+        border: none;
+        border-radius: $border-radius-sm;
+        transition: all 0.3s ease;
+        min-width: 120px;
+
+        &:hover {
+          background-color: #4263eb;
+        }
+
+        &:disabled {
+          background-color: #a5b4fc;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .logout-container {
+    border-top: 1px solid $border-color;
+    padding-top: $spacing-lg;
+    margin-top: $spacing-xl;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    .logout-button {
+      align-items: center;
+      display: flex;
+      color: $error-color;
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: $font-size-md;
+      cursor: pointer;
+      gap: 5px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #f0f0f0;
+
+  h3 {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+
+    .plus-icon {
+      margin-right: 8px;
+      font-weight: bold;
+    }
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+    &:hover {
+      color: #333;
+    }
+  }
+}
+
+.modal-body {
+  padding: 20px;
+
+  .exchange-rate-info {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+
+    .currency-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 24px;
+      height: 24px;
+      background-color: #5c7cfa;
+      color: white;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+  }
+
+  .calculation-info {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .error-message {
+    color: #e03131;
+    background-color: #ffe3e3;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .success-message {
+    color: #2b8a3e;
+    background-color: #d3f9d8;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .currency-converter {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    .currency-input {
+      position: relative;
+      width: 160px;
+      display: flex;
+      align-items: center;
+
+      .currency-symbol {
+        position: absolute;
+        left: 10px;
+        color: #5c7cfa;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        padding-left: 30px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        text-align: right;
+      }
+
+      .currency-label {
+        position: absolute;
+        right: 10px;
+        color: #666;
+      }
+    }
+
+    .converter-arrow {
+      font-size: 24px;
+      color: #666;
+    }
+  }
+
+  .payment-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #5c7cfa;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #4263eb;
+    }
+
+    &:disabled {
+      background-color: #a5b4fc;
+      cursor: not-allowed;
+    }
+  }
+}
+
+/* 알림 모달 스타일 */
+.alert-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.alert-modal-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 24px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.alert-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.alert-modal-content {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.alert-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.alert-modal-message {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.alert-modal-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 500;
+  color: white;
+}
+
+/* 반응형 설정 */
+@media (max-width: 1366px) {
+  .profile-header,
+  .profile-card {
+    max-width: 95%; // 창이 분할되었을 때 너비 조정
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .profile-header,
+  .profile-card {
+    max-width: 90%;
+  }
+
+  .profile-card {
+    padding: 25px;
+  }
+
+  .currency-converter {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .profile-container {
+    padding: 15px;
+  }
+
+  .profile-header,
+  .profile-card {
+    max-width: 100%;
+  }
+
+  .profile-header {
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  .profile-card {
+    padding: 20px;
+  }
+
+  .form-group {
+    label {
+      font-size: 14px;
+    }
+  }
+
+  .input-with-button {
+    flex-direction: column; // 모바일에서는 세로로 배치
+
+    .edit-button {
+      margin-left: 0;
+      margin-top: 8px;
+      width: 100%;
+    }
+  }
+
+  .usdt-container {
+    flex-direction: column;
+
+    .charge-button {
+      width: 100%;
+      margin-left: 0;
+      margin-top: 8px;
+    }
+  }
+
+  .logout-container {
+    flex-direction: column;
+
+    .logout-button {
+      margin-bottom: 10px;
+    }
+  }
+
+  .currency-converter {
+    flex-direction: column;
+    align-items: stretch;
+
+    .currency-input {
+      width: 100%;
+    }
+
+    .converter-arrow {
+      transform: rotate(90deg);
+      margin: 10px 0;
+      text-align: center;
+    }
+  }
+
+  .modal-content {
+    width: 95%;
+  }
+}

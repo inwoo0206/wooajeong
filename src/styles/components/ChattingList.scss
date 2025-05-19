@@ -1,0 +1,475 @@
+/* ChattingList.scss */
+
+.chatroom-chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  box-sizing: border-box;
+  width: 70%;
+  height: 100vh; /* 전체 높이 사용 */
+}
+
+.chatroom-chat-header {
+  width: 100%;
+  height: 75px;
+  background-color: #fff;
+  text-align: center;
+  font-weight: bold;
+  color: var(--gray-700, #45474c);
+  font-family: "ABeeZee", sans-serif;
+  font-size: 24px;
+  line-height: 36px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid #e1e4e8;
+  flex-shrink: 0; /* 헤더 크기 고정 */
+  gap: 30px;
+
+  .back-button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+
+    i {
+      margin-right: 5px;
+    }
+  }
+
+  .chat-title {
+    max-width: 70%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .connection-status-indicator {
+    .connected {
+      color: #4caf50;
+      font-size: 14px;
+    }
+
+    .disconnected {
+      color: #f44336;
+      font-size: 14px;
+    }
+  }
+}
+
+.chatroom-chat-messages-container {
+  width: 100%;
+  flex: 1;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0px 3px 11px rgba(0, 0, 0, 0.06), 0px 10px 15px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  padding: 20px 20px 80px 20px; /* 하단 패딩 증가로 인풋 공간 확보 */
+}
+
+.chatroom-chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto; /* 스크롤 추가 */
+  height: 100%; /* 높이 100% 설정 */
+  scrollbar-width: thin; /* Firefox용 스크롤바 스타일 */
+  padding-right: 10px; /* 스크롤바 공간 확보 */
+}
+
+/* 웹킷 기반 브라우저용 스크롤바 스타일 */
+.chatroom-chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatroom-chat-messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.chatroom-chat-messages::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.chatroom-chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.chatroom-message {
+  display: flex;
+  flex-direction: column;
+}
+
+.chatroom-bot-message {
+  align-self: flex-start;
+  max-width: 85%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.chatroom-user-message {
+  align-self: flex-end;
+  max-width: 85%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* 오른쪽 정렬 */
+  margin-left: auto; /* 오른쪽으로 더 붙이기 위해 추가 */
+  margin-right: 0; /* 오른쪽 마진 제거 */
+  padding-right: 0;
+}
+
+/* 채팅 메시지 스타일 */
+.chatroom-chat-message-container {
+  margin-bottom: 16px;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.chatroom-chat-bubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.chatroom-bot-bubble {
+  background-color: #f0f0f0;
+  color: #333;
+  border-top-left-radius: 4px;
+}
+
+.chatroom-user-bubble {
+  background-color: #4966f5;
+  color: white;
+  border-top-right-radius: 4px;
+  margin-left: auto;
+}
+
+/* 시스템 메시지 */
+.chatroom-system-message {
+  text-align: center;
+  margin: 16px 0;
+
+  .chatroom-system-content {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #f8f9fa;
+    border-radius: 16px;
+    font-size: 13px;
+    color: #666;
+  }
+}
+
+/* 연결 상태 및 로딩 */
+.chatroom-loading-status,
+.chatroom-connection-status {
+  text-align: center;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* 메시지 시간 및 읽음 상태 */
+.chatroom-message-time {
+  font-size: 12px;
+  color: #6c757d;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.chatroom-read-status {
+  margin-left: 5px;
+  font-size: 11px;
+}
+
+/* 날짜 구분선 */
+.chatroom-date-divider {
+  text-align: center;
+  margin: 15px 0;
+  position: relative;
+}
+
+.chatroom-date-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: #e0e0e0;
+  z-index: -1;
+}
+
+.chatroom-date-text {
+  background-color: white;
+  padding: 0 10px;
+  display: inline-block;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* 인풋 컨테이너 */
+.chat-input-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
+  background-color: white;
+  display: flex;
+  border-top: 1px solid #e1e4e8;
+}
+
+.chat-input-field {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 12px 16px;
+  margin-right: 10px;
+  font-size: 14px;
+  outline: none;
+
+  &:focus {
+    border-color: #4966f5;
+  }
+
+  &:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+  }
+}
+
+.chat-send-button {
+  background-color: #4966f5;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 16px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: #3a56e6;
+  }
+
+  &:disabled {
+    background-color: #c1c1c1;
+    cursor: not-allowed;
+  }
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 거래 생성하기 버튼 */
+.create-trade-button-container {
+  width: 100%;
+  position: fixed;
+  bottom: 80px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+  z-index: 5;
+}
+
+.create-trade-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 130px;
+  height: 40px;
+  background-color: #6673ff; // 주황색 버튼 (변경 가능)
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 999; // 다른 요소 위에 표시되도록
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #5567e8;
+  }
+}
+
+/* 거래 모달 */
+.trade-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.trade-modal {
+  width: 90%;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: modalFadeIn 0.3s ease forwards;
+}
+
+.trade-modal-header {
+  padding: 10px 15px;
+  text-align: right;
+  border-bottom: 1px solid #eee;
+}
+
+.close-modal-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+
+  &:hover {
+    color: #333;
+  }
+}
+
+.trade-modal-content {
+  padding: 20px;
+}
+
+.trade-form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    color: #5567e8;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+}
+
+.trade-input-group {
+  display: flex;
+
+  input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-right: 10px;
+
+    &:focus {
+      outline: none;
+      border-color: #6979f8;
+    }
+  }
+}
+
+.trade-input-button {
+  background-color: #6979f8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0 20px;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #5567e8;
+  }
+}
+
+.create-trade-submit-button {
+  width: 100%;
+  background-color: #6979f8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 10px;
+
+  &:hover {
+    background-color: #5567e8;
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.trust-score-button-container {
+  width: 100%;
+  position: fixed;
+  bottom: 80px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+  z-index: 5;
+}
+
+.trust-score-button {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  width: 130px;
+  height: 40px;
+  background-color: #6673ff; // 주황색 버튼 (변경 가능)
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 999; // 다른 요소 위에 표시되도록
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #5567e8;
+  }
+}

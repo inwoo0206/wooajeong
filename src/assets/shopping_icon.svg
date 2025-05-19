@@ -1,0 +1,18 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon-park-solid:shopping" clip-path="url(#clip0_221_128)">
+<g id="Group">
+<path id="Vector" d="M20.9392 6.08334L18.61 16.6945H6.32919L3.99992 6.08334H20.9392Z" fill="#68687C" stroke="#68687C" stroke-width="0.5"/>
+<g id="Vector_2">
+<path d="M1.25 2.5H2.95732L3.68902 5.83333M3.68902 5.83333L6.12805 16.9444H18.811L21.25 5.83333H3.68902Z" fill="#68687C"/>
+<path d="M1.25 2.5H2.95732L3.68902 5.83333M3.68902 5.83333L6.12805 16.9444H18.811L21.25 5.83333H3.68902Z" stroke="#68687C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path id="Vector_3" d="M6.12797 22.5C6.93619 22.5 7.59138 21.7538 7.59138 20.8333C7.59138 19.9128 6.93619 19.1667 6.12797 19.1667C5.31974 19.1667 4.66455 19.9128 4.66455 20.8333C4.66455 21.7538 5.31974 22.5 6.12797 22.5Z" fill="#68687C" stroke="#68687C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_4" d="M18.8109 22.5C19.6192 22.5 20.2744 21.7538 20.2744 20.8333C20.2744 19.9128 19.6192 19.1667 18.8109 19.1667C18.0027 19.1667 17.3475 19.9128 17.3475 20.8333C17.3475 21.7538 18.0027 22.5 18.8109 22.5Z" fill="#68687C" stroke="#68687C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_221_128">
+<rect width="20" height="20" fill="white"/>
+</clipPath>
+</defs>
+</svg>

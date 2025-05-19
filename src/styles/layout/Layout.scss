@@ -1,0 +1,17 @@
+@import "../common/commons.scss";
+@import "../mixin/mixins.scss";
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: $spacing-lg;
+  margin-left: $sidebar-width;
+
+  @include responsive(md) {
+    padding: $spacing-xl;
+  }
+}

@@ -1,0 +1,140 @@
+// in styles/components/CheckPost.scss
+.product-detail-container {
+  max-width: 800px;
+  height: 900px;
+  flex: 1;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0px 3px 11px rgba(0, 0, 0, 0.06), 0px 10px 15px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  padding: 50px;
+
+  .product-detail-header {
+    width: 80%;
+    padding: 20px;
+    max-height: 75px;
+    background-color: #fff;
+    text-align: center;
+    font-weight: bold;
+    color: var(--gray-700, #45474c);
+    font-family: "ABeeZee", sans-serif;
+    font-size: 24px;
+    line-height: 36px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+    position: relative;
+  }
+
+  .product-image-container {
+    width: 100%;
+    margin-bottom: 20px;
+
+    .product-detail-image {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+      max-height: 400px;
+    }
+  }
+
+  .product-info-container {
+    padding: 0 10px;
+
+    .seller-profile {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+
+      .seller-name {
+        font-weight: bold;
+        font-size: 16px;
+      }
+
+      .seller-location {
+        color: #666;
+        font-size: 14px;
+      }
+    }
+
+    .product-title-section {
+      margin-bottom: 20px;
+
+      .product-title {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .product-description {
+        color: #333;
+        line-height: 1.5;
+        margin-bottom: 15px;
+      }
+    }
+
+    .product-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 25px;
+      color: #666;
+      font-size: 14px;
+
+      > div {
+        padding: 5px 0;
+      }
+    }
+
+    .price-section {
+      margin-bottom: 30px;
+
+      .product-price {
+        font-size: 26px;
+        font-weight: bold;
+        color: #4053ff;
+      }
+    }
+
+    .action-buttons {
+      position: sticky;
+      bottom: 20px;
+      background-color: white;
+      padding-top: 15px;
+
+      .buy-button {
+        width: 100%;
+        padding: 15px;
+        background-color: #4053ff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #3042e6;
+        }
+      }
+    }
+  }
+}
+
+.loading-message,
+.error-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  font-size: 18px;
+  color: #666;
+}

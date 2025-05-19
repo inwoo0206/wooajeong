@@ -1,0 +1,289 @@
+/* DealProduct.scss */
+
+// 메인 컨테이너 스타일
+.deal-product-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+// 제목 스타일
+.deal-product-title {
+  width: 100%;
+  padding: 15px;
+  background-color: #fff;
+  text-align: center;
+  font-weight: bold;
+  color: var(--gray-700, #45474c);
+  font-family: "ABeeZee", sans-serif;
+  font-size: 20px;
+  line-height: 30px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+// 상품 리스트 레이아웃
+.deal-product-list {
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  flex: 1;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0px 3px 11px rgba(0, 0, 0, 0.06), 0px 10px 15px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 20px;
+  gap: 16px;
+}
+
+// 상품 카드 스타일
+.product-card {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  transition: transform 0.2s ease;
+  height: 300px;
+  flex: 1 0 calc(50% - 16px);
+  min-width: 280px;
+  max-width: 400px;
+  margin-bottom: 16px;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// 이미지 컨테이너 스타일
+.card-image-container {
+  position: relative;
+  height: 160px;
+  overflow: hidden;
+}
+
+// 카드 이미지 스타일
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// 태그 컨테이너 스타일
+.tag-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 4px;
+}
+
+// 태그 스타일
+.tag {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+
+  &.delivery {
+    background-color: #3182f6; // 택배 태그 색상
+  }
+
+  &.direct-deal {
+    background-color: #1dc800; // 직거래 태그 색상
+  }
+
+  &.recommended {
+    background-color: #ff6b00; // 추천 태그 색상
+  }
+
+  &.certified {
+    background-color: #1dc800; // 인증 태그 색상
+  }
+}
+
+// 카드 콘텐츠 스타일
+.card-content {
+  padding: 12px;
+}
+
+// 상품 정보 스타일
+.product-info {
+  margin-bottom: 12px;
+}
+
+// 상품명 스타일
+.product-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// 상품 스펙 스타일
+.specs {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+// 등록 시간 스타일
+.time {
+  font-size: 12px;
+  color: #999;
+}
+
+// 가격 정보 스타일
+.price-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// 가격 컨테이너 스타일
+.price-container {
+  display: flex;
+  align-items: baseline;
+}
+
+// 가격 스타일
+.price {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+// 배송비 스타일
+.delivery-fee {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+// 판매자 정보 스타일
+.seller-info {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+// 판매자 이름 스타일
+.seller-name {
+  color: #555;
+  font-weight: 500;
+}
+
+// 로딩 메시지 스타일
+.loading-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #666;
+}
+
+// 에러 메시지 스타일
+.error-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #ff3b30;
+}
+
+// 판매하기 버튼 스타일
+.sell-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 120px;
+  height: 40px;
+  background-color: #6673ff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #5561e6;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// 반응형 스타일
+@media (min-width: 1200px) {
+  .product-card {
+    flex: 1 0 calc(25% - 16px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .product-card {
+    flex: 1 0 calc(33.333% - 16px);
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .product-card {
+    flex: 1 0 calc(50% - 16px);
+  }
+}
+
+@media (max-width: 575px) {
+  .product-card {
+    flex: 1 0 100%;
+  }
+
+  .deal-product-container {
+    padding: 10px;
+  }
+
+  .deal-product-title {
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  .deal-product-list {
+    padding: 10px;
+  }
+}
+
+// 화면 크기에 따른 root 컨테이너 스타일
+.home-page {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar-container {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.content-container {
+  flex: 1;
+  overflow: auto;
+  height: 100%;
+  padding-bottom: 60px; // 판매하기 버튼 고려한 패딩
+}
