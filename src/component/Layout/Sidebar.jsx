@@ -75,7 +75,7 @@ function Sidebar() {
       </div>
 
       <nav className="sidebar-nav">
-        <NavLink to="/" className={({ isActive }) => `sidebar-nav-item ${isActive ? "active" : ""}`}>
+        <NavLink to="/home" className={({ isActive }) => `sidebar-nav-item ${isActive ? "active" : ""}`}>
           <span className="nav-icon">
             <img src={home_icon} alt="home 아이콘" />
           </span>
