@@ -33,7 +33,7 @@ function App() {
       <Route path="/deal" element={<CheckDealPage />} />
       <Route path="/chat/:roomId" element={<ChatRoomPage />} />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/" element={<Layout />}>
+      <Route path="/" element={<HomePage />}>
         <Route path="asasas" element={<HomePage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/myprofile" element={<ProfilePage />} />
