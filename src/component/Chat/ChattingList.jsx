@@ -18,6 +18,9 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
     productName: "",
     price: "",
   });
+  // 새로운 상태 추가
+  const [productDetails, setProductDetails] = useState(null);
+  const [isCurrentUserSeller, setIsCurrentUserSeller] = useState(false);
 
   // 알림 모달 관련 상태
   const [showAlertModal, setShowAlertModal] = useState(false);
@@ -31,11 +34,53 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
   const chatBoxRef = useRef(null);
   const navigate = useNavigate();
 
+  // API를 호출하여 상품 정보를 가져오는 함수
+  const fetchProductDetails = async (roomId) => {
+    try {
+      const url = `https://www.wooajung.shop/junggo/junggo_detail?product_id=${roomId}`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("상품 정보를 가져오는데 실패했습니다.");
+      }
+
+      const result = await response.json();
+      console.log("상품 정보 조회 결과:", result);
+
+      if (result.data) {
+        setProductDetails(result.data);
+
+        // 로컬스토리지에 판매자 이름 저장
+        localStorage.setItem("seller_name", result.data.nickname);
+
+        // 거래 폼에 상품명과 가격 설정
+        setTradeForm((prev) => ({
+          ...prev,
+          productName: result.data.product || "",
+          price: result.data.token ? result.data.token.toString() : "",
+          seller: result.data.nickname || "",
+        }));
+
+        // 현재 사용자가 판매자인지 확인
+        const currentNickname = localStorage.getItem("nickname");
+        setIsCurrentUserSeller(currentNickname === result.data.nickname);
+      }
+    } catch (error) {
+      console.error("상품 정보 조회 중 오류 발생:", error);
+      showMessage("오류", "상품 정보를 가져오는데 실패했습니다.", "error");
+    }
+  };
+
   // localStorage에서 사용자 정보 가져오기
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
     if (userId) {
       setCurrentUserId(parseInt(userId));
+    }
+
+    // roomId를 사용하여 상품 정보 가져오기
+    if (roomId) {
+      fetchProductDetails(roomId);
     }
 
     // 상품 정보가 있으면 거래 폼 초기화
@@ -45,7 +90,7 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
         productName: productInfo.title || "",
       }));
     }
-  }, [productInfo]);
+  }, [roomId, productInfo]);
 
   // 채팅 연결 설정
   useEffect(() => {
@@ -255,6 +300,17 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
 
   // 거래 모달 열기
   const openTradeModal = () => {
+    // 현재 로그인한 닉네임 가져오기
+    const currentNickname = localStorage.getItem("nickname");
+
+    // 거래 폼에 구매자 설정 (본인이 판매자가 아닌 경우)
+    if (!isCurrentUserSeller && currentNickname) {
+      setTradeForm((prev) => ({
+        ...prev,
+        buyer: currentNickname,
+      }));
+    }
+
     setShowTradeModal(true);
   };
 
@@ -453,29 +509,27 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
         return;
       }
 
-      if (!productInfo) {
+      // 상품 정보 준비
+      const product = productDetails || productInfo;
+
+      if (!product) {
         showMessage("오류", "상품 정보가 없습니다. 페이지를 새로고침하거나 상품을 다시 선택해주세요.", "error");
         return;
       }
 
-      if (!productInfo.token) {
+      if (!product.token) {
         showMessage("오류", "상품 가격 정보가 없습니다. 판매자에게 가격 정보를 요청해주세요.", "error");
         return;
       }
 
-      if (!productInfo.product) {
-        // product 정보가 없어도 계속 진행하지만 콘솔에 경고 출력
-        console.warn("상품명(keyword) 정보가 없습니다. 빈 값으로 계속 진행합니다.");
-      }
-
       // product.token * 1393 계산
-      const priceInKRW = productInfo.token ? Math.round(productInfo.token * 1393) : 0;
+      const priceInKRW = product.token ? Math.round(product.token * 1393) : 0;
 
       // 요청 파라미터 로깅
       console.log("=== 신뢰점수 API 파라미터 ===");
       console.log("room_id:", roomId);
       console.log("buyer_id:", currentUserId);
-      console.log("keyword:", productInfo.product || "");
+      console.log("keyword:", product.product || "");
       console.log("price:", priceInKRW);
       console.log("===========================");
 
@@ -486,7 +540,7 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
       const apiUrl = new URL("https://www.wooajeong.store/evaluate");
       apiUrl.searchParams.append("room_id", roomId);
       apiUrl.searchParams.append("buyer_id", currentUserId);
-      apiUrl.searchParams.append("keyword", productInfo.product || "");
+      apiUrl.searchParams.append("keyword", product.product || "");
       apiUrl.searchParams.append("price", priceInKRW);
 
       console.log("신뢰점수 확인 API 호출:", apiUrl.toString());
@@ -524,7 +578,9 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
   return (
     <div className="chatroom-chat-wrapper">
       <div className="chatroom-chat-header">
-        <div className="chat-title">{productInfo ? productInfo.title : `안전하게 거래하세요!`}</div>
+        <div className="chat-title">
+          {productDetails ? productDetails.product : productInfo ? productInfo.title : "안전하게 거래하세요!"}
+        </div>
         <div className="connection-status-indicator">
           {isConnected ? <span className="connected">●</span> : <span className="disconnected">●</span>}
         </div>
@@ -596,12 +652,14 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
           </button>
         </div>
 
-        {/* 신뢰점수 확인 버튼 */}
-        <div className="trust-score-button-container">
-          <button className="trust-score-button" onClick={checkTrustScore}>
-            신뢰점수 확인
-          </button>
-        </div>
+        {/* 신뢰점수 확인 버튼 - 판매자가 아닐 때만 표시 */}
+        {!isCurrentUserSeller && (
+          <div className="trust-score-button-container">
+            <button className="trust-score-button" onClick={checkTrustScore}>
+              신뢰점수 확인
+            </button>
+          </div>
+        )}
 
         {/* 거래 생성하기 버튼 */}
         <div className="create-trade-button-container">

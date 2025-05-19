@@ -29,7 +29,6 @@ const ChatList = () => {
     } else if (diffDay < 7) {
       return `${diffDay}일 전`;
     } else {
-      // 년-월-일 형식으로 표시
       return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
     }
   };
@@ -38,39 +37,46 @@ const ChatList = () => {
     const fetchChatRooms = async () => {
       setLoading(true);
       try {
-        // localStorage에서 accessToken 가져오기
+        // 1) 채팅방 목록 호출
         const accessToken = localStorage.getItem("accessToken");
         if (!accessToken) {
           throw new Error("로그인이 필요합니다.");
         }
-
-        const response = await fetch("https://www.yunseo.store/room/my", {
+        const roomRes = await fetch("https://www.yunseo.store/room/my", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
         });
-
-        if (!response.ok) {
+        if (!roomRes.ok) {
           throw new Error("채팅방 목록을 불러오는데 실패했습니다.");
         }
+        const roomsData = await roomRes.json();
 
-        const data = await response.json();
-        console.log("채팅방 목록:", data);
+        // 2) 중고 물품 목록 호출
+        const productRes = await fetch("https://www.wooajung.shop/junggo/junggo_list");
+        if (!productRes.ok) {
+          throw new Error("중고 물품 목록을 불러오는데 실패했습니다.");
+        }
+        const productJson = await productRes.json();
+        const products = productJson.data;
 
-        // API 응답 데이터를 UI에 맞게 변환 (날짜 형식 변환 포함)
-        const formattedRooms = data.map((room) => ({
-          id: room.roomId,
-          title: "새로운 채팅이 도착했습니다.",
-          time: formatDate(room.createdAt), // 날짜 형식 변환
-          originalTime: room.createdAt, // 원본 시간도 보관 (정렬 등에 활용 가능)
-          imageUrl: chat_img,
-        }));
+        // 3) 두 데이터를 결합하여 title 설정
+        const formattedRooms = roomsData.map((room) => {
+          const match = products.find((p) => p.id === room.roomId);
+          return {
+            id: room.roomId,
+            title: match ? match.product : "새로운 채팅이 도착했습니다.",
+            time: formatDate(room.createdAt),
+            originalTime: room.createdAt,
+            imageUrl: chat_img,
+          };
+        });
 
         setChatRooms(formattedRooms);
       } catch (err) {
-        console.error("채팅방 목록 불러오기 오류:", err);
+        console.error("데이터 불러오기 오류:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -103,7 +109,7 @@ const ChatList = () => {
                 <img src={room.imageUrl} alt={room.title} className="chat-room-image" />
                 <div className="chat-room-info">
                   <div className="chat-room-title">{room.title}</div>
-                  <div className="chat-room-time">채팅을 확인해보세요!</div>
+                  <div className="chat-room-time">메세지를 확인해보세요!</div>
                 </div>
               </div>
               <div className="chat-room-badge">
