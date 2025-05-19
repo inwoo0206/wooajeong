@@ -12,7 +12,7 @@ import list_icon from "../../assets/checklist.svg";
 
 function Sidebar() {
   // const { user } = useAuth();
-  const [tokenBalance, setTokenBalance] = useState(null);
+  const [tokenBalance, setTokenBalance] = useState(0);
 
   // Function to get the authentication token
   const getAuthToken = () => {
