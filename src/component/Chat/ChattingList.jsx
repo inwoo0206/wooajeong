@@ -138,6 +138,30 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
     }
   }, [messages]);
 
+  // 토큰 잔액 조회 함수
+  const fetchTokenBalance = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) return;
+
+      const response = await fetch("https://www.wooajung.shop/blockchain/coinBalance", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // 토큰 잔액 업데이트 이벤트 발생
+        window.dispatchEvent(new CustomEvent("tokenBalanceUpdated", { detail: data.token }));
+      }
+    } catch (error) {
+      console.error("Error fetching token balance:", error);
+    }
+  };
+
   // 알림 모달 표시 함수
   const showMessage = (title, message, type = "success") => {
     setModalTitle(title);
@@ -351,6 +375,9 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
         showMessage("거래 생성 실패", errorMessage, "error");
         return;
       }
+
+      // 토큰 잔액 업데이트 - API 호출 성공 후 실행
+      fetchTokenBalance();
 
       // 거래 정보를 채팅방에 메시지로 전송
       if (stompClient && isConnected) {
@@ -607,15 +634,6 @@ const ChattingList = ({ roomId, receiverId, productInfo, onClose }) => {
             전송
           </button>
         </div>
-
-        {/* 신뢰점수 확인 버튼 - 구매자인 경우에만 표시 */}
-        {isBuyer && (
-          <div className="trust-score-button-container">
-            <button className="trust-score-button" onClick={checkTrustScore}>
-              신뢰점수 확인
-            </button>
-          </div>
-        )}
 
         {/* 거래 생성하기 버튼 */}
         <div className="create-trade-button-container">
