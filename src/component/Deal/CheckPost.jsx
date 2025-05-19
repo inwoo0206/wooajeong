@@ -17,7 +17,6 @@ const CheckPost = () => {
         setLoading(true);
         // junggo_list API에서 전체 상품 목록을 가져옴
         const response = await fetch("https://www.wooajung.shop/junggo/junggo_list");
-
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -25,13 +24,18 @@ const CheckPost = () => {
         const result = await response.json();
 
         // 전체 상품 목록에서 선택된 ID와 일치하는 상품만 필터링
-        const selectedProduct = result.data.find((item) => item.id === parseInt(productId));
+        const selectedProduct = result.data.find((item) => item.id === parseInt(productId, 10));
 
         if (!selectedProduct) {
           throw new Error("Product not found");
         }
 
+        // 상품 상태 업데이트
         setProduct(selectedProduct);
+
+        // seller_nickname을 localStorage에 저장
+        localStorage.setItem("seller_nickname", selectedProduct.nickname);
+
         setLoading(false);
       } catch (err) {
         setError("상품 정보를 불러오는데 실패했습니다.");
@@ -58,7 +62,7 @@ const CheckPost = () => {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
       alert("로그인이 필요합니다.");
-      navigate("/login"); // 로그인 페이지로 이동
+      navigate("/login");
       return;
     }
 
@@ -81,7 +85,6 @@ const CheckPost = () => {
 
   // 채팅 UI가 활성화된 경우
   if (showChat) {
-    // seller_id를 receiverId로 사용
     return (
       <ChattingList
         roomId={productId}
@@ -99,6 +102,10 @@ const CheckPost = () => {
   // 상품 상세 정보 표시 모드
   return (
     <div className="product-detail-container">
+      <button className="back-button" onClick={handleBackClick}>
+        ← 뒤로 가기
+      </button>
+
       <div className="product-image-container">
         <img
           src={product.img_url || `https://source.unsplash.com/random/500x300/?product`}

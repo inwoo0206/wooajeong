@@ -1,0 +1,183 @@
+@import "../common/commons.scss";
+@import "../mixin/mixins.scss";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap");
+
+.login-container {
+  height: 100vh;
+  @include flex(column, center, center);
+  background-color: $background-color;
+}
+
+.login-card {
+  width: 491.198px;
+  height: 461.43px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: var(--base-white, #fff);
+  box-shadow: 0px 3px 11px 0px rgba(0, 0, 0, 0.06), 0px 10px 15px 0px rgba(0, 0, 0, 0.03);
+}
+
+.login-title {
+  color: #3333fe;
+  text-align: center;
+
+  font-family: Poppins;
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 62px;
+  letter-spacing: -2px;
+  margin-bottom: 42px;
+}
+
+.login-description {
+  color: var(--gray-700, #45474c);
+  text-align: center;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: ABeeZee;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 36px; /* 150% */
+  padding: 18%;
+}
+
+.kakao-login-button {
+  display: flex;
+  width: 435px;
+  height: 60px;
+  padding: 0px 14px;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: var(--kakao-bg, #fee500);
+
+  color: var(--kakao-text, rgba(0, 0, 0, 0.85));
+  font-family: "Apple SD Gothic Neo";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%; /* 22.5px */
+}
+
+.meta-login-button {
+  display: flex;
+  width: 435px;
+  height: 60px;
+  padding: 0px 14px;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: #ffaf42;
+
+  color: white;
+  font-family: "Apple SD Gothic Neo";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%; /* 22.5px */
+}
+.kakao-icon {
+  margin-right: $spacing-sm;
+  margin-right: 20px;
+}
+
+/* MetaMask 모달 스타일 */
+.metamask-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.metamask-modal {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.modal-header {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  color: #222;
+  margin: 0;
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.metamask-button {
+  background-color: #f6851b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+  transition: background-color 0.2s;
+}
+
+.metamask-button:hover {
+  background-color: #e17614;
+}
+
+.metamask-logo {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.status-message {
+  margin-top: 20px;
+  color: #666;
+}
+
+/* MetaMask 로그인 버튼 스타일 */
+.meta-login-button {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: none;
+  background-color: #f6851b;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.meta-login-button:hover {
+  background-color: #e17614;
+}
+
+.meta-login-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

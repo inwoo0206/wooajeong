@@ -1,0 +1,175 @@
+@import "../common/commons.scss";
+@import "../mixin/mixins.scss";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap");
+
+.log-page-container {
+  height: 100vh;
+  @include flex(column, center, center);
+  background-color: $background-color;
+}
+
+.log-page-title {
+  color: #3333fe;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 62px;
+  letter-spacing: -2px;
+  margin-bottom: 42px;
+}
+
+.log-page-content {
+  width: 491.198px;
+  border-radius: 20px;
+  background: var(--base-white, #fff);
+  box-shadow: 0px 3px 11px 0px rgba(0, 0, 0, 0.06), 0px 10px 15px 0px rgba(0, 0, 0, 0.03);
+  padding: 30px;
+}
+
+.login-description {
+  color: var(--gray-700, #45474c);
+  text-align: center;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: ABeeZee;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 36px;
+  margin-bottom: 30px;
+}
+
+.login-section {
+  @include flex(column, center, center);
+  margin-bottom: 30px;
+}
+
+.metamask-login-btn {
+  display: flex;
+  width: 435px;
+  height: 60px;
+  padding: 0px 14px;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: #feb44f;
+  border: none;
+
+  color: white;
+  font-family: "Apple SD Gothic Neo";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.metamask-login-btn:hover {
+  background-color: #e17614;
+}
+
+.metamask-login-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.logged-in-section {
+  @include flex(column, center, center);
+  margin: 20px 0;
+}
+
+.success-message {
+  color: #4caf50;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.account-info {
+  font-family: "Apple SD Gothic Neo";
+  font-size: 16px;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-family: monospace;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.go-home-button,
+.logout-button {
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-family: "Apple SD Gothic Neo";
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.go-home-button {
+  background-color: #3333fe;
+  color: white;
+}
+
+.go-home-button:hover {
+  background-color: #2222cc;
+}
+
+.logout-button {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.logout-button:hover {
+  background-color: #e0e0e0;
+}
+
+.error-message {
+  color: #f44336;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.loading-indicator {
+  margin: 15px 0;
+  text-align: center;
+  color: #666;
+}
+
+.info-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.info-section h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.info-section p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.info-section a {
+  color: #3333fe;
+  text-decoration: none;
+}
+
+.info-section a:hover {
+  text-decoration: underline;
+}
