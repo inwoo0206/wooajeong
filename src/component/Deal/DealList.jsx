@@ -264,7 +264,7 @@ const DealList = () => {
                 ×
               </button>
             )}
-            <div className="modal-content">
+            <div>
               <h2
                 className="modal-title"
                 style={{
