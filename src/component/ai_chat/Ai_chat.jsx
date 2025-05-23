@@ -3,40 +3,35 @@ import axios from "axios";
 import "../../styles/components/Ai_chat.scss";
 import remove_icon from "../../assets/remove_btn.svg";
 
-// 추가 스타일 (인라인 스타일로 정의)
-const additionalStyles = {
-  productAnalysisSection: {
-    padding: "10px 0",
-  },
-  sectionTitle: {
-    fontWeight: "bold",
-    marginTop: "15px",
-    marginBottom: "8px",
-    fontSize: "1.1rem",
-    color: "#333",
-  },
-  adviceList: {
-    paddingLeft: "20px",
-    margin: "10px 0",
-  },
-  adviceItem: {
-    margin: "5px 0",
-  },
-  aiRecommendation: {
-    backgroundColor: "#f0f8ff",
-    padding: "10px",
-    borderRadius: "5px",
-    marginTop: "10px",
-    marginBottom: "5px",
-    border: "1px solid #d1e5f9",
-  },
-  priceRange: {
-    fontWeight: "bold",
-    color: "#0066cc",
-  },
-};
-
 const Ai_chat = () => {
+  const randomTimeArray = [
+    "2시간 전",
+    "3시간 전",
+    "5시간 전",
+    "6시간 전",
+    "8시간 전",
+    "12시간 전",
+    "14시간 전",
+    "16시간 전",
+    "18시간 전",
+    "22시간 전",
+    "1일 전",
+    "2일 전",
+    "3일 전",
+    "4일 전",
+    "5일 전",
+    "7일 전",
+    "8일 전",
+    "9일 전",
+    "10일 전",
+    "11일 전",
+    "12일 전",
+    "15일 전",
+    "20일 전",
+    "1주일 전",
+    "2주일 전",
+  ];
+
   // 로컬 스토리지에서 채팅 내용 불러오기
   const getSavedMessages = () => {
     const savedMessages = localStorage.getItem("chatMessages");
@@ -139,7 +134,7 @@ const Ai_chat = () => {
     ]);
 
     // 로딩 메시지 추가
-    const loadingId = messages.length + 2; // 사용자 메시지 다음에 추가되므로 +2
+    const loadingId = messages.length + 2;
     setMessages((prev) => [
       ...prev,
       {
@@ -176,73 +171,80 @@ const Ai_chat = () => {
         const purchaseAdvice = response.data.purchase_advice?.points || [];
         const resultText = response.data.result || "";
 
-        // 결과 텍스트에서 부가 정보 추출
-        const resultLines = resultText.split("\n");
+        // result 텍스트에서 제품별 상세 정보 파싱
+        const parseProductDetails = (resultText) => {
+          const productSections = [];
+          const sections = resultText.split(/\d+\.\s\*\*제품명\*\*:/);
+
+          for (let i = 1; i < sections.length; i++) {
+            const section = sections[i];
+
+            // 제품명 추출
+            const nameMatch = section.match(/^([^\n]+)/);
+            const name = nameMatch ? nameMatch[1].trim() : "";
+
+            // 가격 추출
+            const priceMatch = section.match(/\*\*가격\*\*:\s*([^\n]+)/);
+            const price = priceMatch ? priceMatch[1].trim() : "";
+
+            // 상태 추출
+            const stateMatch = section.match(/\*\*상태\*\*:\s*([^\n]+)/);
+            const state = stateMatch ? stateMatch[1].trim() : "";
+
+            // 판매 위치 추출
+            const locationMatch = section.match(/\*\*판매 위치\*\*:\s*([^\n]+)/);
+            const location = locationMatch ? locationMatch[1].trim() : "";
+
+            // 추천 거래장소 추출
+            const placeMatch = section.match(/\*\*추천 거래장소\*\*:\s*([^\n]+)/);
+            const recommendedPlace = placeMatch ? placeMatch[1].trim() : "";
+
+            // 출처 추출
+            const sourceMatch = section.match(/\*\*출처\*\*:\s*([^\n]+)/);
+            const source = sourceMatch ? sourceMatch[1].trim() : "";
+
+            // URL 추출
+            const urlMatch = section.match(/\*\*상품 URL\*\*:\s*\[링크\]\(([^)]+)\)/);
+            const url = urlMatch ? urlMatch[1].trim() : "";
+
+            productSections.push({
+              name,
+              price,
+              state,
+              location,
+              recommendedPlace,
+              source,
+              url,
+            });
+          }
+
+          return productSections;
+        };
+
+        const productDetails = parseProductDetails(resultText);
+
+        const getRandomTime = () => {
+          const randomIndex = Math.floor(Math.random() * randomTimeArray.length);
+          return randomTimeArray[randomIndex];
+        };
 
         // 제품 정보를 매핑하여 추가 정보 포함
         const products = rawProducts.map((rawItem, index) => {
-          // 해당 제품 번호에 대한 추가 정보 찾기 (상태, 추천 거래장소 등)
-          const productIndexInResult = index + 1;
-          const productSectionStart = resultText.indexOf(`${productIndexInResult}. **제품명**:`);
-          const productSectionEnd =
-            productIndexInResult < rawProducts.length
-              ? resultText.indexOf(`${productIndexInResult + 1}. **제품명**:`)
-              : resultText.indexOf("3. **구매 조언**");
-
-          let productSection = "";
-          if (productSectionStart !== -1 && productSectionEnd !== -1) {
-            productSection = resultText.substring(productSectionStart, productSectionEnd);
-          }
-
-          // 상태 추출
-          let condition = "";
-          const conditionMatch = productSection.match(/\*\*상태\*\*: ([^\n]+)/);
-          if (conditionMatch && conditionMatch[1]) {
-            condition = conditionMatch[1].trim();
-          }
-
-          // 추천 거래장소 추출
-          let recommendedPlace = "";
-          const placeMatch = productSection.match(/\*\*추천 거래장소\*\*: ([^\n]+)/);
-          if (placeMatch && placeMatch[1]) {
-            recommendedPlace = placeMatch[1].trim();
-          }
-
-          // 게시 날짜를 위한 기본 배열
-          const defaultTimePosts = [
-            "3달 전",
-            "8일 전",
-            "14시간 전",
-            "1달 전",
-            "10일 전",
-            "10시간 전",
-            "6시간 전",
-            "5일 전",
-            "3달 전",
-            "8일 전",
-            "14시간 전",
-            "1달 전",
-            "10일 전",
-            "10시간 전",
-            "6시간 전",
-            "5일 전",
-          ];
-
-          // 랜덤한 게시 날짜 선택
-          const randomTimePost = defaultTimePosts[Math.floor(Math.random() * defaultTimePosts.length)];
+          const detail = productDetails[index] || {};
 
           return {
             id: index + 1,
-            name: rawItem.title || "제목 정보 없음",
-            price: rawItem.price || "가격 정보 없음",
-            location: rawItem.location || "위치 정보 없음",
-            date: randomTimePost, // 랜덤 게시 날짜 사용
-            link: rawItem.url,
+            name: detail.name || rawItem.title || "제목 정보 없음",
+            price: detail.price || rawItem.price || "가격 정보 없음",
+            location: detail.location || rawItem.location || "위치 정보 없음",
+            date: getRandomTime(),
+            link: detail.url || rawItem.url,
             linkText: "상품 상세 보기",
             imageUrl: rawItem.image_url || "",
             stats: rawItem.stats || "",
-            condition: condition, // 결과 텍스트에서 추출한 상태 정보
-            recommendedPlace: recommendedPlace, // 결과 텍스트에서 추출한 추천 거래장소
+            condition: detail.state || "상태 양호",
+            recommendedPlace: detail.recommendedPlace || "판매자와 협의 필요",
+            source: detail.source || rawItem.source || "정보 없음", // source 필드 수정
           };
         });
 
@@ -293,217 +295,187 @@ const Ai_chat = () => {
     }
   };
 
+  // 새 스타일로 제품 리스트 렌더링
   const renderProductList = (products) => {
     if (!products.length) {
       return (
         <div className="chat-message-container">
-          <div className="chat-bubble bot-bubble">검색 결과에 제품 정보가 없습니다. 다른 검색어로 시도해보세요.</div>
+          <div className="bot-bubble">검색 결과에 제품 정보가 없습니다. 다른 검색어로 시도해보세요.</div>
         </div>
       );
     }
-
-    // 초 단위 시간을 사용자 친화적인 형식으로 변환하는 함수
-    const formatPostTime = (timeStr) => {
-      // "-32182초 전" 형태 처리
-      if (timeStr.includes("초 전")) {
-        const secondsMatch = timeStr.match(/(-?\d+)초 전/);
-        if (secondsMatch) {
-          // 양수로 변환 (절대값 사용)
-          const seconds = Math.abs(parseInt(secondsMatch[1], 10));
-
-          // 초 단위를 적절한 시간 단위로 변환
-          if (seconds < 60) {
-            return "방금 전";
-          } else if (seconds < 3600) {
-            const minutes = Math.floor(seconds / 60);
-            return `${minutes}분 전`;
-          } else if (seconds < 86400) {
-            const hours = Math.floor(seconds / 3600);
-            return `${hours}시간 전`;
-          } else {
-            const days = Math.floor(seconds / 86400);
-            return `${days}일 전`;
-          }
-        }
-      }
-
-      // "XX분 전", "XX시간 전" 등의 형태는 그대로 반환
-      if (
-        timeStr.includes("분 전") ||
-        timeStr.includes("시간 전") ||
-        timeStr.includes("일 전") ||
-        timeStr.includes("방금 전")
-      ) {
-        return timeStr;
-      }
-
-      // 그 외의 경우 원래 값 반환
-      return timeStr;
-    };
 
     // 메시지 객체에서 추가 데이터 추출
     const message = messages.find((msg) => msg.isProductList && msg.parsedItems);
     const priceRange = message?.priceRange || "";
     const aiRecommendation = message?.aiRecommendation || "";
     const purchaseAdvice = message?.purchaseAdvice || [];
-    const resultText = message?.resultText || "";
 
     // AI 추천 정보 파싱
-    let recommendedProductInfo = { name: "", price: "", reason: "" };
+    let recommendedProductInfo = {
+      name: "",
+      reason: "",
+    };
+
     if (aiRecommendation) {
-      // 마크다운 형식의 텍스트를 처리하기 위한 개선된 정규식
-      const nameMatch = aiRecommendation.match(/\*\*추천 제품\*\*:\s*([^,\n]+)(?:,\s*가격\s*([^\n]+))?/);
+      const nameMatch = aiRecommendation.match(/\*\*추천 제품\*\*:\s*([^\n]+)/);
       const reasonMatch = aiRecommendation.match(/\*\*이유\*\*:\s*([^\n]+)/);
 
       if (nameMatch) {
         recommendedProductInfo.name = nameMatch[1].trim();
-        recommendedProductInfo.price = nameMatch[2] ? nameMatch[2].trim() : "";
       }
 
       if (reasonMatch) {
         recommendedProductInfo.reason = reasonMatch[1].trim();
-      } else {
-        // 정규식으로 찾지 못한 경우 대체 방법
-        const lines = aiRecommendation.split("\n");
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i].trim();
-          if (line.includes("추천 제품") && !recommendedProductInfo.name) {
-            const productInfo = line.replace(/^-\s*\*\*추천 제품\*\*:\s*/, "").trim();
-            const parts = productInfo.split(",");
-            if (parts.length > 0) {
-              recommendedProductInfo.name = parts[0].trim();
-
-              if (parts.length > 1 && parts[1].includes("가격")) {
-                recommendedProductInfo.price = parts[1].replace(/가격\s*/, "").trim();
-              }
-            }
-          } else if (line.includes("이유") && !recommendedProductInfo.reason) {
-            recommendedProductInfo.reason = line.replace(/^-\s*\*\*이유\*\*:\s*/, "").trim();
-          }
-        }
-      }
-
-      // 여전히 데이터가 없는 경우 aiRecommendation 전체를 표시
-      if (!recommendedProductInfo.name && !recommendedProductInfo.reason) {
-        console.log("AI 추천 파싱 실패, 원본 데이터:", aiRecommendation);
-        recommendedProductInfo.name = "데이터 추출 중 오류";
-        recommendedProductInfo.reason = aiRecommendation;
       }
     }
 
-    // 구매 조언 정보 파싱 (result 텍스트에서 추출)
-    let advicePoints = [];
-    const adviceSection = resultText.match(/3\. \*\*구매 조언\*\*\n([\s\S]*?)(?=\n4\. \*\*AI 추천\*\*|$)/);
-    if (adviceSection && adviceSection[1]) {
-      advicePoints = adviceSection[1]
-        .split("\n")
-        .map((line) => {
-          const match = line.match(/- ([^\n]+)/);
-          return match ? match[1].trim() : "";
-        })
-        .filter((point) => point !== "");
+    // 추천 제품 찾기 - AI 추천과 일치하는 제품 찾기
+    const recommendedProduct =
+      products.find((product) => {
+        const productName = product.name.toLowerCase();
+        const recommendedName = recommendedProductInfo.name.toLowerCase();
+        return productName.includes(recommendedName) || recommendedName.includes(productName);
+      }) || products[0];
+
+    // 추천 제품을 맨 앞으로 이동한 새로운 배열 생성
+    const sortedProducts = [...products];
+    if (recommendedProduct) {
+      // 추천 제품을 배열에서 제거
+      const recommendedIndex = sortedProducts.findIndex((p) => p.id === recommendedProduct.id);
+      if (recommendedIndex > -1) {
+        sortedProducts.splice(recommendedIndex, 1);
+      }
+      // 추천 제품을 맨 앞에 추가
+      sortedProducts.unshift(recommendedProduct);
     }
 
-    // 구매 조언이 없으면 API에서 받은 데이터 사용
-    if (advicePoints.length === 0 && purchaseAdvice.length > 0) {
-      advicePoints = purchaseAdvice;
-    }
+    // 평균 시세를 계산하는 함수 추가
+    const calculateAveragePrice = (priceRangeText) => {
+      if (!priceRangeText) return "정보 없음";
+
+      // 숫자와 원을 포함한 패턴을 찾기 (예: "10,000원", "50000원" 등)
+      const priceMatches = priceRangeText.match(/(\d{1,3}(?:,\d{3})*|\d+)(?:원)?/g);
+
+      if (!priceMatches || priceMatches.length < 2) {
+        return priceRangeText; // 원본 텍스트 반환
+      }
+
+      // 처음 두 개의 가격 값 추출하고 쉼표 제거 후 숫자로 변환
+      const price1 = parseInt(priceMatches[0].replace(/[,원]/g, ""));
+      const price2 = parseInt(priceMatches[1].replace(/[,원]/g, ""));
+
+      // 평균 계산
+      const average = Math.round((price1 + price2) / 2);
+
+      // 천 단위 구분자 추가
+      const formattedAverage = average.toLocaleString("ko-KR");
+
+      return `해당 제품의 평균시세는 ${formattedAverage}원으로 측정됩니다.`;
+    };
 
     return (
-      <div className="chat-message-container fade-in">
-        <div className="chat-bubble bot-bubble">
-          <div style={additionalStyles.productAnalysisSection}>
-            <h3 style={additionalStyles.sectionTitle}>1. 검색한 제품의 평균 중고 시세</h3>
-            <p>
-              - 가격 범위: <span style={additionalStyles.priceRange}>{priceRange}</span>
-            </p>
-
-            <h3 style={additionalStyles.sectionTitle}>2. 검색 결과 리스트</h3>
-            <div className="product-list-container">
-              {products.map((product, idx) => {
-                // 여기서 위치 정보에 대한 처리 추가
-                let displayLocation = product.location;
-                // 초 패턴 확인 (-숫자초 전 패턴 확인)
-                if (displayLocation && displayLocation.match(/-\d+초 전/)) {
-                  displayLocation = "판매자의 장소 정보가 없습니다.";
-                }
-
-                // 상태 정보에 대한 처리 추가
-                let displayCondition = product.condition || "상태 양호";
-                // "정보 없음"인 경우 "상태 양호"로 대체
-                if (displayCondition === "정보 없음") {
-                  displayCondition = "상태 양호";
-                }
-
-                return (
-                  <div key={product.id} className="product-item-card fade-in">
-                    <div className="product-title">
-                      <span className="product-number">{idx + 1}.</span> {product.name}
-                    </div>
-                    <ul className="product-details-list">
-                      <li>💰 가격: {product.price}</li>
-                      <li>🔍 상태: {displayCondition}</li>
-                      <li>📍 판매 위치: {displayLocation}</li>
-                      <li>
-                        🤝 추천 거래장소: {product.recommendedPlace || "판매자와 거리가 멀어 직거래가 불가능합니다."}
-                      </li>
-                      <li>📅 게시 날짜: {product.date}</li>
-                      <li>
-                        🔗{" "}
-                        <a href={product.link} target="_blank" rel="noopener noreferrer" style={{ color: "#6673FF" }}>
-                          상품 URL: {product.linkText}
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                );
-              })}
+      <div className="chat-message-container">
+        <div className="bot-bubble">
+          <div className="product-results">
+            {/* 시세 정보 */}
+            <div className="price-info-section">
+              <h3 className="section-title">💰 평균 시세</h3>
+              <p className="price-range-text">{calculateAveragePrice(priceRange)}</p>
             </div>
 
-            <h3 style={additionalStyles.sectionTitle}>3. 구매 조언</h3>
-            <ul style={additionalStyles.adviceList}>
-              {advicePoints.length > 0 ? (
-                advicePoints.map((point, index) => (
-                  <li key={index} style={additionalStyles.adviceItem}>
-                    {/* 마크다운 문법을 HTML로 변환 */}
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: point.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>"),
-                      }}
-                    />
-                  </li>
-                ))
-              ) : (
-                <li style={additionalStyles.adviceItem}>주행거리와 연식을 반드시 확인하세요.</li>
-              )}
-            </ul>
+            {/* 상품 리스트 제목 */}
+            <h3 className="section-title">📋 상품 리스트</h3>
 
-            {/* AI 추천 섹션은 항상 표시 */}
-            <h3 style={additionalStyles.sectionTitle}>4. AI 추천</h3>
-            <div style={additionalStyles.aiRecommendation}>
-              {recommendedProductInfo.name ? (
-                <>
-                  <p>
-                    <strong>추천 제품:</strong> {recommendedProductInfo.name}
-                    {recommendedProductInfo.price && `, ${recommendedProductInfo.price}`}
+            {/* 상품 리스트 - 가로 스크롤 카드 (추천 제품이 맨 앞에) */}
+            <div className="product-cards-container">
+              <div className="product-cards-scroll">
+                {sortedProducts.map((product, index) => (
+                  <div
+                    key={product.id}
+                    className={`product-card-horizontal ${product.id === recommendedProduct.id ? "recommended" : ""}`}
+                  >
+                    <div className="product-image-container">
+                      <img
+                        src={product.imageUrl || "https://via.placeholder.com/200x150?text=이미지+없음"}
+                        alt={product.name}
+                        className="product-image-horizontal"
+                      />
+                      {product.id === recommendedProduct.id && <div className="recommended-badge">AI 추천</div>}
+                      {index === 0 && product.id === recommendedProduct.id && (
+                        <div className="first-recommended-badge">1순위</div>
+                      )}
+                      {/* 출처 라벨 추가 */}
+                      <div
+                        className={`source-badge ${
+                          product.source === "중고나라"
+                            ? "junggo"
+                            : product.source === "번개장터"
+                            ? "bungae"
+                            : "default"
+                        }`}
+                      >
+                        {product.source}
+                      </div>
+                    </div>
+                    <div className="product-info-horizontal">
+                      <h4 className="product-name-horizontal">{product.name}</h4>
+                      <div className="product-details-horizontal">
+                        <p>
+                          <span className="detail-label">가격:</span> {product.price}
+                        </p>
+                        <p>
+                          <span className="detail-label">상태:</span> {product.condition}
+                        </p>
+                        <p>
+                          <span className="detail-label">위치:</span> {product.location}
+                        </p>
+                        <p>
+                          <span className="detail-label">게시:</span> {product.date}
+                        </p>
+                        <p>
+                          <span className="detail-label">거래장소:</span> {product.recommendedPlace}
+                        </p>
+                      </div>
+                      <a href={product.link} target="_blank" rel="noopener noreferrer" className="product-link-button">
+                        상품 보러가기
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* AI 추천 섹션 */}
+            <div className="ai-recommendation-section">
+              <h3 className="section-title">🤖 AI 추천</h3>
+              <div className="ai-recommendation-card">
+                <div className="recommendation-content">
+                  <h4 className="recommended-product-name">{recommendedProductInfo.name || "추천 제품"}</h4>
+                  <p className="recommendation-reason">
+                    {recommendedProductInfo.reason || "최적의 가성비와 품질을 고려한 추천입니다."}
                   </p>
-                  {recommendedProductInfo.reason && (
-                    <p>
-                      <strong>이유:</strong> {recommendedProductInfo.reason}
-                    </p>
-                  )}
-                </>
-              ) : aiRecommendation ? (
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: aiRecommendation.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br/>"),
-                  }}
-                />
-              ) : (
-                <p>
-                  <em>AI 추천 정보를 불러오는 중 오류가 발생했습니다.</em>
-                </p>
-              )}
+                </div>
+              </div>
+            </div>
+
+            {/* 구매 조언 */}
+            <div className="advice-container">
+              <h4 className="advice-title">💡 구매 조언</h4>
+              <ul className="advice-list">
+                {purchaseAdvice.length > 0 ? (
+                  purchaseAdvice.map((point, idx) => (
+                    <li key={idx}>
+                      {point
+                        .replace(/\*\*([^*]+)\*\*/g, "$1") // **텍스트** → 텍스트
+                        .replace(/주의사항 \d+:\s*/g, "") // "주의사항 1: " 제거
+                        .trim()}
+                    </li>
+                  ))
+                ) : (
+                  <li>구매 전 제품 상태를 꼼꼼히 확인하세요.</li>
+                )}
+              </ul>
             </div>
           </div>
         </div>
@@ -511,13 +483,14 @@ const Ai_chat = () => {
     );
   };
 
+  // 기본 메시지 렌더링
   const renderMessage = (msg) => {
     if (msg.isProductList && msg.parsedItems) {
       return renderProductList(msg.parsedItems);
     } else if (msg.isStreaming) {
       return (
         <div className="chat-message-container">
-          <div className="chat-bubble bot-bubble">
+          <div className="bot-bubble">
             <div className="typing-indicator">{msg.text}</div>
           </div>
         </div>
@@ -526,7 +499,7 @@ const Ai_chat = () => {
       const lines = msg.text.split("\n");
       return (
         <div className="chat-message-container">
-          <div className={`chat-bubble ${msg.isUser ? "user-bubble" : "bot-bubble"}`}>
+          <div className={`${msg.isUser ? "user-bubble" : "bot-bubble"}`}>
             {lines.map((line, i) => (
               <React.Fragment key={i}>
                 {line}
@@ -583,41 +556,33 @@ const Ai_chat = () => {
 
   return (
     <div className="ai-chat-wrapper">
-      <div className="chat-header">
-        최적의 중고거래를 찾아드립니다!
-        {!isLogged && (
-          <div className="login-controls">
-            <button onClick={() => setIsLogged(true)} className="login-button">
-              로그인
-            </button>
+      <div className="chat-container">
+        <div className="chat-messages-wrap">
+          <div className="chat-messages">
+            {messages.map((msg) => (
+              <div key={msg.id} className={`message ${msg.isUser ? "user-message" : "bot-message"}`}>
+                {renderMessage(msg)}
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
           </div>
-        )}
-      </div>
 
-      <div className="chat-messages-container">
-        <div className="chat-messages">
-          {messages.map((msg) => (
-            <div key={msg.id} className={`message ${msg.isUser ? "user-message" : "bot-message"}`}>
-              {renderMessage(msg)}
-              {msg.isUser && <div className="user-icon"></div>}
+          {!isLogged && (
+            <div className="login-overlay">
+              <div className="login-message">Login을 통해 대화하세요!</div>
             </div>
-          ))}
-          <div ref={messagesEndRef} />
+          )}
         </div>
 
-        {!isLogged && (
-          <div className="login-overlay">
-            <div className="login-message">Login을 통해 대화하세요!</div>
-          </div>
-        )}
-        {/* 채팅 초기화 버튼 추가 */}
+        {/* 검색 버튼 */}
+        <button className="search-modal-button" onClick={() => setShowSearchModal(true)}>
+          검색 조건 설정
+        </button>
+
+        {/* 채팅 초기화 버튼 */}
         <button onClick={clearChat} className="clear-chat-button">
           <img src={remove_icon} alt="remove 아이콘" />
           채팅 초기화
-        </button>
-
-        <button className="search-modal-button-fixed" onClick={() => setShowSearchModal(true)}>
-          검색 조건 설정
         </button>
       </div>
 
